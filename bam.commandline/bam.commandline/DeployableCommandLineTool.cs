@@ -3,7 +3,7 @@ using System.Diagnostics;
 using System.IO;
 using System.IO.Compression;
 using Bam.Net.CommandLine;
-using Bam.Net.Testing;
+//using Bam.Net.Testing;
 using Bam.Net.Web;
 
 namespace Bam.Net
@@ -46,7 +46,8 @@ namespace Bam.Net
             }
 
             Message.PrintLine("downloading {0}", ConsoleColor.Cyan, toolName);
-            Http.Get($"http://bamapps.net/download?fileName={zipFileName}", downloadPath);
+            //Http.Get($"http://bamapps.net/download?fileName={zipFileName}", downloadPath);
+            throw new NotImplementedException();
             Message.PrintLine("file downloaded to {0}", ConsoleColor.Green, downloadPath);
             Message.PrintLine("unzipping {0} to {1}", downloadPath, binDir);
             ZipFile.ExtractToDirectory(downloadPath, binDir);

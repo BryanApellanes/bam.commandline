@@ -12,11 +12,11 @@ using Bam.Net.CommandLine;
 using Bam.Net.Configuration;
 using Bam.Net;
 using Bam.Net.ExceptionHandling;
-using Bam.Net.Testing.Integration;
-using Bam.Net.Testing.Unit;
+/*using Bam.Net.Testing.Integration;
+using Bam.Net.Testing.Unit;*/
 using System.Diagnostics;
-using Bam.Net.Testing;
-using Bam.Net.Testing.Specification;
+/*using Bam.Net.Testing;
+using Bam.Net.Testing.Specification;*/
 
 namespace Bam.Net
 {
@@ -26,8 +26,8 @@ namespace Bam.Net
     {
         static CommandLineTool()
         {
-            GetUnitTestRunListeners = () => new List<ITestRunListener<UnitTestMethod>>();
-            GetSpecTestRunListeners = ()=> new List<ITestRunListener<SpecTestMethod>>();
+            /*GetUnitTestRunListeners = () => new List<ITestRunListener<UnitTestMethod>>();
+            GetSpecTestRunListeners = ()=> new List<ITestRunListener<SpecTestMethod>>();*/
             InitLogger();
         }
         
@@ -91,7 +91,7 @@ namespace Bam.Net
         /// <param name="parseErrorHandler">The parse error handler.</param>
         public static void Initialize(string[] args, Action preInit, ConsoleArgsParsedDelegate parseErrorHandler = null)
 		{
-            AssemblyResolve.Monitor(()=>
+/*            AssemblyResolve.Monitor(()=>
             {
                 ILogger logger = Logger;
                 if(logger == null)
@@ -100,7 +100,7 @@ namespace Bam.Net
                     logger.StartLoggingThread();
                 }
                 return logger;
-            });
+            });*/
 
             if(parseErrorHandler == null)
             {
@@ -137,7 +137,7 @@ namespace Bam.Net
 				Interactive();
                 return;
             }
-            else if (Arguments.Contains("t"))
+/*            else if (Arguments.Contains("t"))
             {
                 RunUnitTests();
                 return;
@@ -151,7 +151,7 @@ namespace Bam.Net
             {
                 IntegrationTestRunner.RunIntegrationTests(Assembly.GetEntryAssembly());
                 return;
-            }
+            }*/
             else
 			{
 				if (DefaultMethod != null)
@@ -169,7 +169,7 @@ namespace Bam.Net
 				}
 			}
 		}
-
+/* Moved these to bam.testing.TestableCommandLineTool
         private static void RunSpecTests()
         {
             if (Arguments.Contains("group"))
@@ -192,7 +192,7 @@ namespace Bam.Net
             {
                 RunAllUnitTests(Assembly.GetEntryAssembly());
             }
-        }
+        }*/
 
         private static bool _loggerInitialized;
         static object _initLoggerLock = new object();
@@ -230,10 +230,10 @@ namespace Bam.Net
 			}
 		}
 
-        public static void RunIntegrationTests()
+/*        public static void RunIntegrationTests()
         {
             IntegrationTestRunner.RunIntegrationTests(Assembly.GetEntryAssembly());
-        }
+        }*/
 
 		protected static bool IsInteractive { get; set; }
 
@@ -246,7 +246,7 @@ namespace Bam.Net
             {
                 IsInteractive = true;
                 AddMenu(Assembly.GetEntryAssembly(), "Main", 'm', new ConsoleMenuDelegate(ShowMenu));
-                AddMenu(Assembly.GetEntryAssembly(), "Test", 't', new ConsoleMenuDelegate(UnitTestMenu));
+                //AddMenu(Assembly.GetEntryAssembly(), "Test", 't', new ConsoleMenuDelegate(UnitTestMenu));
 
                 ShowMenu(Assembly.GetEntryAssembly(), OtherMenus.ToArray(), "Main");
             }
@@ -285,7 +285,7 @@ namespace Bam.Net
             Message.PrintLine("{0}:Passed", ConsoleColor.Green, text);
         }
 
-        public static void UnitTestMenu(Assembly assembly, ConsoleMenu[] otherMenus, string header)
+/*        public static void UnitTestMenu(Assembly assembly, ConsoleMenu[] otherMenus, string header)
         {
             Console.WriteLine(header);
             ITestRunner<UnitTestMethod> runner = GetUnitTestRunner(assembly, Log.Default);
@@ -313,8 +313,8 @@ namespace Bam.Net
             {
                 Exit(0);
             }
-        }
-
+        }*/
+/*
         public static EventHandler DefaultPassedHandler;
         public static EventHandler DefaultFailedHandler;
         
@@ -357,8 +357,8 @@ namespace Bam.Net
             AttachUnitTestRunListeners(runner);
             runner.RunTestGroup(testGroup);
         }
-  
-        protected internal static Func<IEnumerable<ITestRunListener<UnitTestMethod>>> GetUnitTestRunListeners
+*/  
+/*        protected internal static Func<IEnumerable<ITestRunListener<UnitTestMethod>>> GetUnitTestRunListeners
         {
             get;
             set;
@@ -368,8 +368,8 @@ namespace Bam.Net
         {
             get;
             set;
-        }
-
+        }*/
+/*
         protected internal static ITestRunner<SpecTestMethod> GetSpecTestRunner(Assembly assembly, ILogger logger)
         {
             return GetTestRunner<SpecTestMethod>(assembly, logger);
@@ -436,7 +436,7 @@ namespace Bam.Net
             };
             return runner;
         }
-
+*/
         public static void Warn(string message)
         {
             Warn(message, new object[] { });
@@ -488,7 +488,7 @@ namespace Bam.Net
 				Environment.Exit(1);
 			}
 		}
-		
+		/*
         private static void AttachSpecTestRunListeners(ITestRunner<SpecTestMethod> runner)
         {
             foreach (ITestRunListener<SpecTestMethod> listener in GetSpecTestRunListeners())
@@ -527,6 +527,6 @@ namespace Bam.Net
             {
                 runner.TestFailed += DefaultFailedHandler;
             }
-        }
+        }*/
     }
 }

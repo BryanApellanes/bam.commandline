@@ -97,7 +97,7 @@ namespace Bam.Net.CommandLine
         public static ProcessOutput RunAndWait(this ProcessStartInfo info, Action<string> standardOut = null, Action<string> errorOut = null, int timeOut = 60000)
         {
             ProcessOutputCollector output = new ProcessOutputCollector(standardOut, errorOut);
-            return Run(info, output, timeOut);
+            return ProcessStartInfoExtensions.Run(info, output, timeOut);
         }
 
         /// <summary>
@@ -207,15 +207,31 @@ namespace Bam.Net.CommandLine
         /// <returns></returns>
         public static ProcessOutput Run(this string exe, string arguments, EventHandler onExit, Action<string> onStandardOut = null, Action<string> onErrorOut = null, bool promptForAdmin = false, int? timeout = null)
         {
-            ProcessStartInfo startInfo = CreateStartInfo(promptForAdmin);
+            ProcessStartInfo startInfo = ProcessExtensions.CreateStartInfo(promptForAdmin);
             startInfo.FileName = exe;
             startInfo.Arguments = arguments;
             ProcessOutputCollector receiver = new ProcessOutputCollector(onStandardOut, onErrorOut);
-            return Run(startInfo, onExit, receiver, timeout);
+            return ProcessStartInfoExtensions.Run(startInfo, onExit, receiver, timeout);
         }
 
 
-        
-        
+
+        // TODO: obsolete this method
+        private static void GetExeAndArguments(string command, out string exe, out string arguments)
+        {
+            exe = command;
+            arguments = string.Empty;
+            string[] split = command.Split(new string[] { " " }, StringSplitOptions.RemoveEmptyEntries);
+            if (split.Length > 1)
+            {
+                exe = split[0];
+                for (int i = 1; i < split.Length; i++)
+                {
+                    arguments += split[i];
+                    if (i != split.Length - 1)
+                        arguments += " ";
+                }
+            }
+        }
     }
 }

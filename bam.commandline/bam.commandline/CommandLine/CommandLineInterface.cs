@@ -14,7 +14,7 @@ using Bam.Net.Configuration;
 using System.Threading;
 using System.Threading.Tasks;
 using Bam.Net.Application;
-using Bam.Net.Automation;
+//using Bam.Net.Automation;
 
 namespace Bam.Net.CommandLine
 {
@@ -293,7 +293,7 @@ namespace Bam.Net.CommandLine
         /// the runas verb set on the startinfo.  The current
         /// process will exit.
         /// </summary>
-        public static void EnsureAdminRights()
+/*        public static void EnsureAdminRights()
         {
             if (!WeHaveAdminRights())
             {
@@ -309,12 +309,12 @@ namespace Bam.Net.CommandLine
         public static bool WeHaveAdminRights()
         {
             return UserUtil.CurrentWindowsUserHasAdminRights();
-        }
+        }*/
 
         /// <summary>
         /// Runs the current process again, prompting for admin rights. This is WINDOWS ONLY
         /// </summary>
-        public static void Elevate()
+/*        public static void Elevate()
         {
             Process current = Process.GetCurrentProcess();
             ProcessStartInfo startInfo = new ProcessStartInfo
@@ -331,7 +331,7 @@ namespace Bam.Net.CommandLine
             startInfo.Arguments = arguments.ToString();
             Process.Start(startInfo);
             Environment.Exit(0);
-        }
+        }*/
 
         public static void Restart()
         {
@@ -496,7 +496,7 @@ namespace Bam.Net.CommandLine
         /// </summary>
         /// <param name="name"></param>
         /// <returns></returns>
-        public static string GetPathArgument(string name, string promptMessage = null)
+/*        public static string GetPathArgument(string name, string promptMessage = null)
         {
             string argumentValue = GetArgument(name, promptMessage);
             if (argumentValue.StartsWith("~"))
@@ -511,7 +511,7 @@ namespace Bam.Net.CommandLine
             }
 
             return argumentValue;
-        }
+        }*/
         
         /// <summary>
         /// Gets the command line argument with the specified name.
@@ -1429,7 +1429,7 @@ File Version: {1}
         /// </summary>
         protected static void CheckBamDebugSetting()
         {
-            if (Arguments.Contains("debug") || BamSettings.BamDebug)
+            if (Arguments.Contains("debug"))// || BamSettings.BamDebug)
             {
                 Console.WriteLine($"Attach Debugger: ProcessId={Process.GetCurrentProcess().Id}");
                 Console.ReadLine();
