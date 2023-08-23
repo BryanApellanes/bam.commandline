@@ -9,8 +9,11 @@ using System.Diagnostics;
 using System.Threading;
 using System.Threading.Tasks;
 using System.IO;
+using Bam.CommandLine;
+using Bam.Net;
+using Bam.Net.CommandLine;
 
-namespace Bam.Net.CommandLine
+namespace Bam.CommandLine
 {
     public static class Extensions
     {
@@ -23,10 +26,10 @@ namespace Bam.Net.CommandLine
             CommandLineInterface.InvokeInCurrentAppDomain(consoleMethod.Method, consoleMethod.Provider, consoleMethod.Parameters);
         }
 
-        public static void InvokeInSeparateAppDomain(this ConsoleMethod consoleInvokeableMethod)
-        {
-            CommandLineInterface.InvokeInSeparateAppDomain(consoleInvokeableMethod.Method, consoleInvokeableMethod.Provider, consoleInvokeableMethod.Parameters);
-        }
+        /*        public static void InvokeInSeparateAppDomain(this ConsoleMethod consoleInvokeableMethod)
+                {
+                    CommandLineInterface.InvokeInSeparateAppDomain(consoleInvokeableMethod.Method, consoleInvokeableMethod.Provider, consoleInvokeableMethod.Parameters);
+                }*/
 
         /// <summary>
         /// Run the specified command in a separate process capturing the output
@@ -40,17 +43,17 @@ namespace Bam.Net.CommandLine
         /// <returns></returns>
         public static ProcessOutput Run(this string command, Action<string> onStandardOutput, int? timeout = 600000)
         {
-            return Run(command, null, onStandardOutput, onStandardOutput, false, timeout);
+            return command.Run(null, onStandardOutput, onStandardOutput, false, timeout);
         }
 
         public static ProcessOutput Run(this string command, Action<string> onStandardOut, Action<string> onErrorOut, int? timeout = null)
         {
-            return Run(command, null, onStandardOut, onErrorOut, false, timeout);
+            return command.Run(null, onStandardOut, onErrorOut, false, timeout);
         }
 
         public static ProcessOutput Run(this string command, Action<string> onStandardOut, Action<string> onErrorOut, bool promptForAdmin = false)
         {
-            return Run(command, null, onStandardOut, onErrorOut, promptForAdmin);
+            return command.Run(null, onStandardOut, onErrorOut, promptForAdmin);
         }
         /// <summary>
         /// Run the specified command in a separate process
@@ -61,7 +64,7 @@ namespace Bam.Net.CommandLine
         /// <returns></returns>
         public static ProcessOutput Run(this string command, EventHandler onExit, int? timeout)
         {
-            return Run(command, onExit, null, null, false, timeout);
+            return command.Run(onExit, null, null, false, timeout);
         }
 
         /// <summary>
@@ -80,7 +83,7 @@ namespace Bam.Net.CommandLine
         {
             GetExeAndArguments(command, out string exe, out string arguments);
 
-            return Run(exe, arguments, onExit, onStandardOut, onErrorOut, promptForAdmin, timeout);
+            return exe.Run(arguments, onExit, onStandardOut, onErrorOut, promptForAdmin, timeout);
         }
 
         /// <summary>
@@ -91,13 +94,13 @@ namespace Bam.Net.CommandLine
         /// <param name="onExit"></param>
         public static ProcessOutput Run(this string exe, string arguments, EventHandler onExit)
         {
-            return Run(exe, arguments, onExit, null);
+            return exe.Run(arguments, onExit, null);
         }
 
         public static ProcessOutput RunAndWait(this ProcessStartInfo info, Action<string> standardOut = null, Action<string> errorOut = null, int timeOut = 60000)
         {
             ProcessOutputCollector output = new ProcessOutputCollector(standardOut, errorOut);
-            return ProcessStartInfoExtensions.Run(info, output, timeOut);
+            return info.Run(output, timeOut);
         }
 
         /// <summary>
@@ -108,20 +111,20 @@ namespace Bam.Net.CommandLine
         /// <param name="standardOut"></param>
         /// <param name="errorOut"></param>
         /// <returns></returns>
-        public static ProcessOutput Start(this string filePath, string arguments = null, Action<string> standardOut = null, Action<string> errorOut =null)
+        public static ProcessOutput Start(this string filePath, string arguments = null, Action<string> standardOut = null, Action<string> errorOut = null)
         {
             ProcessStartInfo startInfo = filePath.ToStartInfo(arguments);
             return startInfo.Run(standardOut, errorOut);
         }
-        
+
         public static ProcessStartInfo ToStartInfo(this string filePath, string arguments = null)
         {
-            return ToStartInfo(filePath, new DirectoryInfo("."), arguments);
+            return filePath.ToStartInfo(new DirectoryInfo("."), arguments);
         }
 
         public static ProcessStartInfo ToStartInfo(this string filePath, DirectoryInfo workingDirectory, string arguments = null)
         {
-            return ToStartInfo(new FileInfo(filePath), workingDirectory, arguments);
+            return new FileInfo(filePath).ToStartInfo(workingDirectory, arguments);
         }
 
         public static ProcessStartInfo ToStartInfo(this FileInfo fileInfo, DirectoryInfo workingDirectory, string arguments = null)
@@ -147,7 +150,7 @@ namespace Bam.Net.CommandLine
 
         public static ProcessStartInfo ToCmdStartInfo(this FileInfo cmdFileInfo, string arguments, DirectoryInfo workingDirectory)
         {
-            return ToStartInfo(OSInfo.GetPath("cmd.exe"), $"/c \"{cmdFileInfo.FullName}\" {arguments}");
+            return OSInfo.GetPath("cmd.exe").ToStartInfo($"/c \"{cmdFileInfo.FullName}\" {arguments}");
         }
 
 
@@ -162,7 +165,7 @@ namespace Bam.Net.CommandLine
         public static ProcessOutput RunAndWait(this string command, Action<string> standardOut = null, Action<string> errorOut = null, int timeOut = 60000)
         {
             GetExeAndArguments(command, out string exe, out string arguments);
-            return Run(exe, arguments, (o, a) => { }, standardOut, errorOut, false, timeOut);
+            return exe.Run(arguments, (o, a) => { }, standardOut, errorOut, false, timeOut);
         }
 
         /// <summary>
@@ -174,7 +177,7 @@ namespace Bam.Net.CommandLine
         /// <param name="timeOut">The time out.</param>
         public static ProcessOutput RunAndWait(this string exe, string arguments, EventHandler onExit = null, int timeOut = 60000)
         {
-            return Run(exe, arguments, onExit, timeOut);
+            return exe.Run(arguments, onExit, timeOut);
         }
 
         /// <summary>
@@ -189,7 +192,7 @@ namespace Bam.Net.CommandLine
         /// <returns></returns>
         public static ProcessOutput Run(this string exe, string arguments, EventHandler onExit, int? timeout)
         {
-            return Run(exe, arguments, onExit, null, null, false, timeout);
+            return exe.Run(arguments, onExit, null, null, false, timeout);
         }
 
         /// <summary>
@@ -211,7 +214,7 @@ namespace Bam.Net.CommandLine
             startInfo.FileName = exe;
             startInfo.Arguments = arguments;
             ProcessOutputCollector receiver = new ProcessOutputCollector(onStandardOut, onErrorOut);
-            return ProcessStartInfoExtensions.Run(startInfo, onExit, receiver, timeout);
+            return startInfo.Run(onExit, receiver, timeout);
         }
 
 

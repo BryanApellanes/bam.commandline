@@ -6,7 +6,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 
-namespace Bam
+namespace Bam.CommandLine
 {
-    public delegate void ExitDelegate(int exitCode);
+    public delegate void ConsoleArgsParsedDelegate(ParsedArguments arguments);
 }

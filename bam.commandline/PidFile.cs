@@ -1,9 +1,10 @@
 using System;
 using System.Diagnostics;
 using System.IO;
+using Bam.Net;
 using Bam.Net.Logging;
 
-namespace Bam.Net.CommandLine
+namespace Bam.CommandLine
 {
     public class PidFile
     {
@@ -52,7 +53,7 @@ namespace Bam.Net.CommandLine
             {
                 try
                 {
-                    Process = System.Diagnostics.Process.GetProcessById(ProcessId);
+                    Process = Process.GetProcessById(ProcessId);
                 }
                 catch (Exception ex)
                 {
@@ -65,7 +66,7 @@ namespace Bam.Net.CommandLine
                 {
                     if (matchCommandLineArgs)
                     {
-                        if(Process.StartInfo.Arguments.Equals(CommandLineArgs, StringComparison.InvariantCultureIgnoreCase))
+                        if (Process.StartInfo.Arguments.Equals(CommandLineArgs, StringComparison.InvariantCultureIgnoreCase))
                         {
                             logger?.Warning("CommandLineArgs match ({0}): killing old process", CommandLineArgs);
                             Process.Kill();
@@ -87,7 +88,7 @@ namespace Bam.Net.CommandLine
 
             return false;
         }
-        
+
         private static PidFile _current;
         private static readonly object _pidFileLock = new object();
         public static PidFile Current
@@ -104,7 +105,7 @@ namespace Bam.Net.CommandLine
 
             try
             {
-                Process process = System.Diagnostics.Process.GetProcessById(pid);
+                Process process = Process.GetProcessById(pid);
                 return new PidFile(process, fileCommandLineArgs);
             }
             catch (Exception ex)
@@ -114,9 +115,9 @@ namespace Bam.Net.CommandLine
             }
             return new PidFile(-1, string.Empty);
         }
-        
+
         protected Process Process { get; set; }
-        protected FileInfo MainModule { get; set; } 
+        protected FileInfo MainModule { get; set; }
         public int ProcessId { get; set; }
         public string CommandLineArgs { get; set; }
         public string Name { get; set; }
@@ -126,13 +127,13 @@ namespace Bam.Net.CommandLine
         {
             Init(string.Join(" ", Environment.GetCommandLineArgs()));
         }
-        
+
         private void Init(string commandLineArgs)
         {
             ProcessId = Process.Id;
             MainModule = new FileInfo(Process.MainModule.FileName);
-            Name = $"{System.IO.Path.GetFileNameWithoutExtension(MainModule.Name)}.pid";
-            PidFilePath = System.IO.Path.Combine(MainModule.Directory.FullName, Name);
+            Name = $"{Path.GetFileNameWithoutExtension(MainModule.Name)}.pid";
+            PidFilePath = Path.Combine(MainModule.Directory.FullName, Name);
             CommandLineArgs = commandLineArgs;
         }
     }

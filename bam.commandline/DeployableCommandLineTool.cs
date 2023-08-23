@@ -2,11 +2,12 @@ using System;
 using System.Diagnostics;
 using System.IO;
 using System.IO.Compression;
+using Bam.Net;
 using Bam.Net.CommandLine;
 //using Bam.Net.Testing;
 using Bam.Net.Web;
 
-namespace Bam.Net
+namespace Bam.CommandLine
 {
     public class DeployableCommandLineTool : CommandLineTool
     {
@@ -22,7 +23,7 @@ namespace Bam.Net
             OutLine("This is not fully implemented", ConsoleColor.Yellow);
             OutLine("Ssh to the remote then download and run http://bamapps.net/download?fileName=install.sh, use 'source install.sh' to set path after install.", ConsoleColor.Cyan);
         }
-        
+
         [ConsoleAction("Download", "Download and install the latest version of a tool.")]
         public void Download()
         {

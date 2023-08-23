@@ -14,9 +14,11 @@ using Bam.Net.Configuration;
 using System.Threading;
 using System.Threading.Tasks;
 using Bam.Net.Application;
+using Bam.Net.CommandLine;
+using Bam.CommandLine;
 //using Bam.Net.Automation;
 
-namespace Bam.Net.CommandLine
+namespace Bam.CommandLine
 {
     [Serializable]
     public abstract partial class CommandLineInterface : MarshalByRefObject
@@ -60,16 +62,16 @@ namespace Bam.Net.CommandLine
             do
             {
                 keyInfo = Console.ReadKey(true);
-                if(keyInfo.Key != ConsoleKey.Backspace && keyInfo.Key != ConsoleKey.Enter)
+                if (keyInfo.Key != ConsoleKey.Backspace && keyInfo.Key != ConsoleKey.Enter)
                 {
                     pass += keyInfo.KeyChar;
                     Out("*", colors);
                 }
                 else
                 {
-                    if(keyInfo.Key == ConsoleKey.Backspace && pass.Length > 0)
+                    if (keyInfo.Key == ConsoleKey.Backspace && pass.Length > 0)
                     {
-                        pass = pass.Substring(0, (pass.Length - 1));
+                        pass = pass.Substring(0, pass.Length - 1);
                         Out("\b \b");
                     }
                 }
@@ -149,7 +151,7 @@ namespace Bam.Net.CommandLine
         /// <returns></returns>
         public static string GetArgument(string name, string promptMessage = null, Func<string, string> prompter = null)
         {
-            prompter = prompter ??  ((p) => Prompt(p ?? $"Please enter a value for {name}"));
+            prompter = prompter ?? ((p) => Prompt(p ?? $"Please enter a value for {name}"));
             string acronym = name.CaseAcronym().ToLowerInvariant();
             string fromConfig = DefaultConfiguration.GetAppSetting(name, "").Or(DefaultConfiguration.GetAppSetting(acronym, ""));
             return Arguments.Contains(name) ? Arguments[name] :
@@ -167,8 +169,8 @@ namespace Bam.Net.CommandLine
         /// Represents arguments after parsing with a call to ParseArgs.  Arguments should be 
         /// passed in on the command line in the format /&lt;name&gt;:&lt;value&gt;.
         /// </summary>
-        public static ParsedArguments Arguments 
-        { 
+        public static ParsedArguments Arguments
+        {
             get => arguments;
             set => arguments = value;
         }
@@ -189,9 +191,8 @@ namespace Bam.Net.CommandLine
         }
 
         /// <summary>
-        /// If false a prompt to confirm to the last menu will be presented
-        /// after every selection, if true the last menu will be presented
-        /// automatically
+        /// Gets or sets a value indicating whether to present
+        /// the last menu automatically
         /// </summary>
         protected static bool AutoReturn
         {
@@ -256,7 +257,7 @@ namespace Bam.Net.CommandLine
         {
             Process process = Process.GetCurrentProcess();
             FileInfo main = new FileInfo(process.MainModule.FileName);
-            string commandLineArgs = string.Join(" ", Environment.GetCommandLineArgs());            
+            string commandLineArgs = string.Join(" ", Environment.GetCommandLineArgs());
             string pidFileName = $"{Path.GetFileNameWithoutExtension(main.Name)}.pid";
             string pidFilePath = Path.Combine(main.Directory.FullName, pidFileName);
             KillExistingProcess(pidFilePath, commandLineArgs);
@@ -350,8 +351,8 @@ namespace Bam.Net.CommandLine
             Process.Start(startInfo);
             Environment.Exit(0);
         }
-        
-        
+
+
         public static bool ConfirmFormat(string format, params object[] args)
         {
             return Confirm(string.Format(format, args));
@@ -496,23 +497,23 @@ namespace Bam.Net.CommandLine
         /// </summary>
         /// <param name="name"></param>
         /// <returns></returns>
-/*        public static string GetPathArgument(string name, string promptMessage = null)
-        {
-            string argumentValue = GetArgument(name, promptMessage);
-            if (argumentValue.StartsWith("~"))
-            {
-                ProcessHomeDirectoryResolver homeDirectoryResolver = new ProcessHomeDirectoryResolver();
-                return homeDirectoryResolver.GetHomePath(argumentValue);
-            }
+        /*        public static string GetPathArgument(string name, string promptMessage = null)
+                {
+                    string argumentValue = GetArgument(name, promptMessage);
+                    if (argumentValue.StartsWith("~"))
+                    {
+                        ProcessHomeDirectoryResolver homeDirectoryResolver = new ProcessHomeDirectoryResolver();
+                        return homeDirectoryResolver.GetHomePath(argumentValue);
+                    }
 
-            if (argumentValue.StartsWith(".") && !argumentValue.StartsWith(".."))
-            {
-                return Path.Combine(Environment.CurrentDirectory, argumentValue);
-            }
+                    if (argumentValue.StartsWith(".") && !argumentValue.StartsWith(".."))
+                    {
+                        return Path.Combine(Environment.CurrentDirectory, argumentValue);
+                    }
 
-            return argumentValue;
-        }*/
-        
+                    return argumentValue;
+                }*/
+
         /// <summary>
         /// Gets the command line argument with the specified name.
         /// </summary>
@@ -574,7 +575,7 @@ namespace Bam.Net.CommandLine
         /// <returns></returns>
         public static T SelectFrom<T>(IEnumerable<T> options, string prompt = "Select an option from the list", ConsoleColor color = ConsoleColor.DarkCyan)
         {
-            return SelectFrom<T>(options, (t) => t.ToString(), prompt, color);
+            return SelectFrom(options, (t) => t.ToString(), prompt, color);
         }
 
         /// <summary>
@@ -670,7 +671,7 @@ namespace Bam.Net.CommandLine
         public static void Version(Assembly assembly)
         {
             FileVersionInfo fv = FileVersionInfo.GetVersionInfo(assembly.Location);
-            AssemblyCommitAttribute commitAttribute =  assembly.GetCustomAttribute<AssemblyCommitAttribute>();
+            AssemblyCommitAttribute commitAttribute = assembly.GetCustomAttribute<AssemblyCommitAttribute>();
             StringBuilder versionInfo = new StringBuilder();
             versionInfo.AppendFormat("AssemblyVersion: {0}\r\n", assembly.GetName().Version.ToString());
             versionInfo.AppendFormat("AssemblyFileVersion: {0}\r\n", fv.FileVersion.ToString());
@@ -739,7 +740,7 @@ File Version: {1}
         {
             OtherMenus.Add(menu);
         }
-        
+
         protected static void ShowMenu(Assembly assemblyToAnalyze, ConsoleMenu[] otherMenus, string headerText)
         {
             List<ConsoleMethod> actions = ConsoleMethod.FromAssembly<ConsoleActionAttribute>(assemblyToAnalyze);
@@ -1008,7 +1009,7 @@ File Version: {1}
         {
             Out($"{message}\r\n", new ConsoleColorCombo(foreground, background));
         }
-        
+
         public static void OutLine(string message, ConsoleColorCombo colors)
         {
             Out($"{message}\r\n", colors);
@@ -1065,12 +1066,12 @@ File Version: {1}
         {
             return (T)AppDomain.CurrentDomain.GetData("State");
         }
-        
+
         [DebuggerStepThrough]
         protected internal static void InvokeSelection(List<ConsoleMethod> actions, string answer, string header, string footer, out int selectedNumber)
         {
             selectedNumber = -1;
-            if (int.TryParse(answer.ToString(), out selectedNumber) && (selectedNumber - 1) > -1 && (selectedNumber - 1) < actions.Count)
+            if (int.TryParse(answer.ToString(), out selectedNumber) && selectedNumber - 1 > -1 && selectedNumber - 1 < actions.Count)
             {
                 selectedNumber = InvokeSelection(actions, header, footer, selectedNumber);
             }
@@ -1086,6 +1087,7 @@ File Version: {1}
         /// run in a separate AppDomain.  This is primarily for 
         /// UnitTest isolation.
         /// </summary>
+        [Obsolete("The feature supported by this is deprecated")]
         protected internal static bool IsolateMethodCalls
         {
             get;
@@ -1120,14 +1122,14 @@ File Version: {1}
                     action.Provider = ctor.Invoke(null);
                 }
 
-                if (IsolateMethodCalls)
-                {
-                    InvokeInSeparateAppDomain(invoke, action, parameters);
-                }
-                else
+                /*if (IsolateMethodCalls)
                 {
                     InvokeInCurrentAppDomain(invoke, action, parameters);
                 }
+                else
+                {*/
+                InvokeInCurrentAppDomain(invoke, action, parameters);
+                /*}*/
             }
             catch (Exception ex)
             {
@@ -1153,7 +1155,7 @@ File Version: {1}
             ShowActions<ConsoleMethod>(actions);
         }
 
-        protected static void ShowActions<TConsoleMethod>(List<TConsoleMethod> actions) where TConsoleMethod: ConsoleMethod
+        protected static void ShowActions<TConsoleMethod>(List<TConsoleMethod> actions) where TConsoleMethod : ConsoleMethod
         {
             for (int i = 1; i <= actions.Count; i++)
             {
@@ -1210,7 +1212,7 @@ File Version: {1}
         {
             _blocker.Set();
         }
-        
+
         protected internal static object[] GetParameters(MethodInfo method)
         {
             return GetParameters(method, false);
@@ -1260,7 +1262,7 @@ File Version: {1}
                 AddSwitches(type);
             }
         }
-        
+
         /// <summary>
         /// Calls AddValidArgument for every ConsoleAction that has a 
         /// CommandLineSwitch defined
@@ -1271,7 +1273,7 @@ File Version: {1}
             MethodInfo[] methods = type.GetMethods();
             foreach (MethodInfo method in methods)
             {
-                if (method.HasCustomAttributeOfType<ConsoleActionAttribute>(out ConsoleActionAttribute action))
+                if (method.HasCustomAttributeOfType(out ConsoleActionAttribute action))
                 {
                     if (!string.IsNullOrEmpty(action.CommandLineSwitch))
                     {
@@ -1319,7 +1321,7 @@ File Version: {1}
         /// <param name="logger"></param>
         public static bool ExecuteSwitches(ParsedArguments arguments, object instance, ILogger logger = null)
         {
-            Expect.IsNotNull(instance, "instance can't be null, use a Type if executing static method");
+            instance.IsNotNull("instance can't be null, use a Type if executing static method");
             return ExecuteSwitches(arguments, instance.GetType(), instance, logger);
         }
 
@@ -1402,14 +1404,14 @@ File Version: {1}
                 if (methodToInvoke != null)
                 {
                     CheckBamDebugSetting();
-                    if (IsolateMethodCalls)
-                    {
-                        methodToInvoke.InvokeInSeparateAppDomain();
-                    }
-                    else
-                    {
-                        methodToInvoke.InvokeInCurrentAppDomain();
-                    }
+                    /*                    if (IsolateMethodCalls)
+                                        {
+                                            methodToInvoke.InvokeInSeparateAppDomain();
+                                        }
+                                        else
+                                        {*/
+                    methodToInvoke.InvokeInCurrentAppDomain();
+                    /*}*/
                     executed = true;
                     logger?.AddEntry("Executed {0}: {1}", key, methodToInvoke.Information);
                 }
@@ -1483,7 +1485,7 @@ File Version: {1}
                 }
             }
 
-            Expect.IsFalse(toExecute.Count > 1, "Multiple ConsoleActions found with the specified command line switch: {0}"._Format(commandLineSwitch));
+            (toExecute.Count > 1).IsFalse("Multiple ConsoleActions found with the specified command line switch: {0}"._Format(commandLineSwitch));
 
             if (toExecute.Count == 0)
             {

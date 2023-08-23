@@ -9,6 +9,7 @@ using System.Reflection;
 using Bam.Net;
 using Bam.Net.CommandLine;
 using Bam.Net.Data.Model;
+using Bam.CommandLine;
 
 namespace Bam.Net.Data.Model
 {

@@ -6,8 +6,9 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Reflection;
+using Bam.CommandLine;
 
-namespace Bam.Net.CommandLine
+namespace Bam.CommandLine
 {
     public delegate void ConsoleMenuDelegate(Assembly assemblyToAnalyze, ConsoleMenu[] otherMenus, string header);
     //public delegate void ConsoleMenuDelegate<T>(ConsoleMenu[] otherMenus, string header) where T: Attribute, new();

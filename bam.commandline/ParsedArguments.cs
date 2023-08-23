@@ -1,13 +1,14 @@
 /*
 	Copyright © Bryan Apellanes 2015  
 */
+using Bam.Net;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
 using System.Text;
 
-namespace Bam.Net.CommandLine
+namespace Bam.CommandLine
 {
     public enum ArgumentParseStatus
     {
@@ -40,23 +41,23 @@ namespace Bam.Net.CommandLine
         public ParsedArguments() : this(Environment.GetCommandLineArgs())
         {
         }
-        
+
         public ParsedArguments(string[] args) : this(DefaultArgPrefix, args, ArgumentInfo.FromArgs(args))
         {
         }
-        
+
         public ParsedArguments(string argPrefix, string[] args, ArgumentInfo[] validArgumentInfos)
         {
-            this.OriginalStrings = args;
-            this.parsedArguments = new Dictionary<string, string>();
+            OriginalStrings = args;
+            parsedArguments = new Dictionary<string, string>();
             if (args.Length == 0)
             {
-                this.Status = ArgumentParseStatus.Success;
-                this.Message = "No arguments";
+                Status = ArgumentParseStatus.Success;
+                Message = "No arguments";
                 return;
             }
             ArgumentInfoHash validArguments = new ArgumentInfoHash(validArgumentInfos);
-            
+
             foreach (string argument in args)
             {
                 string arg = argument.Trim();
@@ -84,15 +85,15 @@ namespace Bam.Net.CommandLine
 
                     if (nameValue.Length == 1 && validArguments[name] != null)
                     {
-						if (validArguments[name].AllowNullValue)
-						{
-							parsedArguments.Add(name, "");
-						}
-						else
-						{
-							Message = "No value specified for " + name;
-							Status = ArgumentParseStatus.Error;
-						}
+                        if (validArguments[name].AllowNullValue)
+                        {
+                            parsedArguments.Add(name, "");
+                        }
+                        else
+                        {
+                            Message = "No value specified for " + name;
+                            Status = ArgumentParseStatus.Error;
+                        }
                     }
 
                     if (nameValue.Length == 2)
@@ -124,16 +125,16 @@ namespace Bam.Net.CommandLine
             }
         }
 
-		public void EnsureArgumentValue(string argument, string message = "Required argument value not specified")
-		{
-			EnsureArgument(argument);
-			Args.ThrowIf(string.IsNullOrEmpty(this[argument]), message);
-		}
+        public void EnsureArgumentValue(string argument, string message = "Required argument value not specified")
+        {
+            EnsureArgument(argument);
+            Args.ThrowIf(string.IsNullOrEmpty(this[argument]), message);
+        }
 
-		public void EnsureArgument(string argument, string message = "Required argument not specified")
-		{
-			Args.ThrowIf(!Contains(argument), message);
-		}
+        public void EnsureArgument(string argument, string message = "Required argument not specified")
+        {
+            Args.ThrowIf(!Contains(argument), message);
+        }
 
         public bool Contains(string argumentToLookFor)
         {

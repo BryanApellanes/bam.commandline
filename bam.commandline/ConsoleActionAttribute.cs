@@ -7,15 +7,15 @@ using System.Linq;
 using System.Text;
 using System.Reflection;
 
-namespace Bam.Net.CommandLine
+namespace Bam.CommandLine
 {
     /// <summary>
     /// An attribute used to designate a method as runnable from a command line
     /// menu interface
     /// </summary>
     [Serializable]
-    [AttributeUsage(AttributeTargets.Method, AllowMultiple=false, Inherited=true)]
-    public class ConsoleActionAttribute: Attribute, IInfoAttribute
+    [AttributeUsage(AttributeTargets.Method, AllowMultiple = false, Inherited = true)]
+    public class ConsoleActionAttribute : Attribute, IInfoAttribute
     {
         /// <summary>
         /// Instantiate a ConsoleAction attribute
@@ -33,13 +33,13 @@ namespace Bam.Net.CommandLine
         public ConsoleActionAttribute(string commandLineSwitch, string information)
             : this(information)
         {
-            this.CommandLineSwitch = commandLineSwitch;
+            CommandLineSwitch = commandLineSwitch;
         }
 
         public ConsoleActionAttribute(string commandLineSwitch, string valueExample, string information)
             : this(commandLineSwitch, information)
         {
-            this.ValueExample = valueExample;
+            ValueExample = valueExample;
         }
 
         /// <summary>

@@ -6,7 +6,10 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 
-namespace Bam.Net.CommandLine
+namespace Bam.CommandLine
 {
-    public delegate void ConsoleArgsParsedDelegate(ParsedArguments arguments);
+    public interface IInfoAttribute
+    {
+        string Information { get; set; }
+    }
 }

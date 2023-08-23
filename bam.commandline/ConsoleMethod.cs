@@ -10,7 +10,7 @@ using Bam.Net;
 using System.Diagnostics;
 using Bam.Net.Logging;
 
-namespace Bam.Net.CommandLine
+namespace Bam.CommandLine
 {
     [Serializable]
     public class ConsoleMethod
@@ -22,7 +22,7 @@ namespace Bam.Net.CommandLine
             : this(method, null)
         {
         }
-        
+
         public ConsoleMethod(MethodInfo method, Attribute actionInfo)
         {
             Method = method;
@@ -32,8 +32,8 @@ namespace Bam.Net.CommandLine
         public ConsoleMethod(MethodInfo method, Attribute actionInfo, object provider, string switchValue = "")
             : this(method, actionInfo)
         {
-            this.Provider = provider;
-            this.SwitchValue = switchValue;
+            Provider = provider;
+            SwitchValue = switchValue;
         }
 
         /// <summary>
@@ -48,9 +48,9 @@ namespace Bam.Net.CommandLine
         {
             get
             {
-                if(_provider == null && !Method.IsStatic)
+                if (_provider == null && !Method.IsStatic)
                 {
-                    _provider= Method.DeclaringType.Construct();
+                    _provider = Method.DeclaringType.Construct();
                 }
                 return _provider;
             }
@@ -97,31 +97,31 @@ namespace Bam.Net.CommandLine
         }
 
         [DebuggerStepThrough]
-		public object Invoke()
-		{
-			object result = null;
-			try
-			{
-				if(!Method.IsStatic && Provider == null)
-				{
-					Provider = Method.DeclaringType.Construct();
-				}
-				result = Method.Invoke(Provider, Parameters);
-			}
-			catch (Exception ex)
-			{
-				throw ex.GetInnerException();				
-			}
+        public object Invoke()
+        {
+            object result = null;
+            try
+            {
+                if (!Method.IsStatic && Provider == null)
+                {
+                    Provider = Method.DeclaringType.Construct();
+                }
+                result = Method.Invoke(Provider, Parameters);
+            }
+            catch (Exception ex)
+            {
+                throw ex.GetInnerException();
+            }
 
-			return result;
-		}
+            return result;
+        }
 
         public static List<ConsoleMethod> FromType(Type typeToAnalyze, Type attributeAddorningMethod)
         {
             return FromType<ConsoleMethod>(typeToAnalyze, attributeAddorningMethod);
         }
 
-        public static List<TConsoleMethod> FromType<TConsoleMethod>(Type typeToAnalyze, Type attributeAddorningMethod) where TConsoleMethod: ConsoleMethod, new()
+        public static List<TConsoleMethod> FromType<TConsoleMethod>(Type typeToAnalyze, Type attributeAddorningMethod) where TConsoleMethod : ConsoleMethod, new()
         {
             List<TConsoleMethod> actions = new List<TConsoleMethod>();
             MethodInfo[] methods = typeToAnalyze.GetMethods();

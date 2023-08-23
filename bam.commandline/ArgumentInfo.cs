@@ -1,21 +1,23 @@
 /*
 	Copyright © Bryan Apellanes 2015  
 */
+using Bam.Net;
+using Bam.Net.CommandLine;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 
-namespace Bam.Net.CommandLine
+namespace Bam.CommandLine
 {
     public class ArgumentInfo
     {
         public ArgumentInfo(string name, bool allowNull, string description = null, string valueExample = null)
         {
-            this.Name = name;
-            this.AllowNullValue = allowNull;
-            this.Description = description;
-            this.ValueExample = valueExample;
+            Name = name;
+            AllowNullValue = allowNull;
+            Description = description;
+            ValueExample = valueExample;
         }
 
         public string ValueExample { get; set; }

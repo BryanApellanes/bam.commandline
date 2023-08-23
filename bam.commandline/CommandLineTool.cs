@@ -12,27 +12,20 @@ using Bam.Net.CommandLine;
 using Bam.Net.Configuration;
 using Bam.Net;
 using Bam.Net.ExceptionHandling;
-/*using Bam.Net.Testing.Integration;
-using Bam.Net.Testing.Unit;*/
 using System.Diagnostics;
-/*using Bam.Net.Testing;
-using Bam.Net.Testing.Specification;*/
 
-namespace Bam.Net
+namespace Bam.CommandLine
 {
-    // TODO: Refactor/rewrite/extract the menu capabilities defined in this class 
     [Serializable]
-    public abstract class CommandLineTool: CommandLineInterface
+    public abstract class CommandLineTool : CommandLineInterface
     {
         static CommandLineTool()
         {
-            /*GetUnitTestRunListeners = () => new List<ITestRunListener<UnitTestMethod>>();
-            GetSpecTestRunListeners = ()=> new List<ITestRunListener<SpecTestMethod>>();*/
             InitLogger();
         }
-        
+
         protected static ILogger Logger { get; set; }
-		public static LogEntryAddedListener MessageToConsole { get; set; }
+        public static LogEntryAddedListener MessageToConsole { get; set; }
 
         protected static MethodInfo DefaultMethod { get; set; }
 
@@ -48,7 +41,7 @@ namespace Bam.Net
                 Interactive();
             }
         }
-        
+
         /// <summary>
         /// Parses command arguments and executes any switches specified.  Returns true if command line switches were
         /// specified, otherwise false.
@@ -60,7 +53,7 @@ namespace Bam.Net
         {
             return ExecuteMain(args, () => { }, parseErrorHandler);
         }
-        
+
         /// <summary>
         /// Parses command arguments and executes any switches specified.  Returns true if command line switches were
         /// specified, otherwise false.
@@ -82,7 +75,7 @@ namespace Bam.Net
         {
             Initialize(args, () => { }, parseErrorHandler);
         }
-        
+
         /// <summary>
         /// Prepares commandline arguments for reading.  If this method completes without errors, parsed arguments
         /// are in the static `Arguments` property.
@@ -90,19 +83,9 @@ namespace Bam.Net
         /// <param name="args">The arguments.</param>
         /// <param name="parseErrorHandler">The parse error handler.</param>
         public static void Initialize(string[] args, Action preInit, ConsoleArgsParsedDelegate parseErrorHandler = null)
-		{
-/*            AssemblyResolve.Monitor(()=>
-            {
-                ILogger logger = Logger;
-                if(logger == null)
-                {
-                    logger = new ConsoleLogger { AddDetails = false };
-                    logger.StartLoggingThread();
-                }
-                return logger;
-            });*/
-
-            if(parseErrorHandler == null)
+        {
+            
+            if (parseErrorHandler == null)
             {
                 parseErrorHandler = (a) => throw new ArgumentException(a.Message);
             }
@@ -110,9 +93,9 @@ namespace Bam.Net
             ArgsParsedError += parseErrorHandler;
 
             preInit();
-            
-			AddValidArgument("i", true, description: "Run interactively");
-			AddValidArgument("?", true, description: "Show usage");
+
+            AddValidArgument("i", true, description: "Run interactively");
+            AddValidArgument("?", true, description: "Show usage");
             AddValidArgument("v", true, description: "Show version information");
             AddValidArgument("t", true, description: "Run all unit tests");
             AddValidArgument("it", true, description: "Run all integration tests");
@@ -120,79 +103,64 @@ namespace Bam.Net
             AddValidArgument("tag", false, description: "Specify a tag to associate with test executions");
             AddValidArgument("group", false, description: "When running unit and spec tests, only run the tests in the specified test group");
 
-			ParseArgs(args);
+            ParseArgs(args);
 
-			if (Arguments.Contains("?"))
-			{
-				Usage(Assembly.GetEntryAssembly());
-				Exit();
-			}
+            if (Arguments.Contains("?"))
+            {
+                Usage(Assembly.GetEntryAssembly());
+                Exit();
+            }
             else if (Arguments.Contains("v"))
             {
                 Version(Assembly.GetEntryAssembly());
                 Exit();
             }
-			else if (Arguments.Contains("i"))
-			{
-				Interactive();
-                return;
-            }
-/*            else if (Arguments.Contains("t"))
+            else if (Arguments.Contains("i"))
             {
-                RunUnitTests();
+                Interactive();
                 return;
-            }
-            else if (Arguments.Contains("spec"))
-            {
-                RunSpecTests();
-                return;
-            }
-            else if (Arguments.Contains("it"))
-            {
-                IntegrationTestRunner.RunIntegrationTests(Assembly.GetEntryAssembly());
-                return;
-            }*/
-            else
-			{
-				if (DefaultMethod != null)
-				{
-					Expect.IsTrue(DefaultMethod.IsStatic, "DefaultMethod must be static.");
-					if (DefaultMethod.GetParameters().Length > 0)
-					{
-						DefaultMethod.Invoke(null, new object[] { Arguments });
-					}
-					else
-					{
-						DefaultMethod.Invoke(null, null);
-					}
-					return;
-				}
-			}
-		}
-/* Moved these to bam.testing.TestableCommandLineTool
-        private static void RunSpecTests()
-        {
-            if (Arguments.Contains("group"))
-            {
-                RunSpecTestGroup(Assembly.GetEntryAssembly(), Arguments["group"]);
             }
             else
             {
-                RunAllSpecTests(Assembly.GetEntryAssembly());
+                if (DefaultMethod != null)
+                {
+                    DefaultMethod.IsStatic.IsTrue("DefaultMethod must be static.");
+                    if (DefaultMethod.GetParameters().Length > 0)
+                    {
+                        DefaultMethod.Invoke(null, new object[] { Arguments });
+                    }
+                    else
+                    {
+                        DefaultMethod.Invoke(null, null);
+                    }
+                    return;
+                }
             }
         }
+        /* Moved these to bam.testing.TestableCommandLineTool
+                private static void RunSpecTests()
+                {
+                    if (Arguments.Contains("group"))
+                    {
+                        RunSpecTestGroup(Assembly.GetEntryAssembly(), Arguments["group"]);
+                    }
+                    else
+                    {
+                        RunAllSpecTests(Assembly.GetEntryAssembly());
+                    }
+                }
 
-        private static void RunUnitTests()
-        {
-            if (Arguments.Contains("group"))
-            {
-                RunUnitTestGroup(Assembly.GetEntryAssembly(), Arguments["group"]);
-            }
-            else
-            {
-                RunAllUnitTests(Assembly.GetEntryAssembly());
-            }
-        }*/
+                private static void RunUnitTests()
+                {
+                    if (Arguments.Contains("group"))
+                    {
+                        RunUnitTestGroup(Assembly.GetEntryAssembly(), Arguments["group"]);
+                    }
+                    else
+                    {
+                        RunAllUnitTests(Assembly.GetEntryAssembly());
+                    }
+                }*/
 
         private static bool _loggerInitialized;
         static object _initLoggerLock = new object();
@@ -203,7 +171,7 @@ namespace Bam.Net
                 if (!_loggerInitialized)
                 {
                     _loggerInitialized = true;
-                    
+
                     ConsoleLogger logger = (ConsoleLogger)Log.CreateLogger(typeof(ConsoleLogger));
                     logger.UseColors = true;
                     logger.ShowTime = true;
@@ -218,24 +186,24 @@ namespace Bam.Net
             return Log.Default as ConsoleLogger;
         }
 
-		private static void TryInvoke<T>(ConsoleMethod cim)
-		{
-			try
-			{
-				cim.Invoke();
-			}
-			catch (Exception ex)
-			{
-				Message.PrintLine("Exception in {0} method {1}: {2}", ConsoleColor.Magenta, typeof(T).Name, cim.Method.Name, ex.Message);
-			}
-		}
-
-/*        public static void RunIntegrationTests()
+        private static void TryInvoke<T>(ConsoleMethod cim)
         {
-            IntegrationTestRunner.RunIntegrationTests(Assembly.GetEntryAssembly());
-        }*/
+            try
+            {
+                cim.Invoke();
+            }
+            catch (Exception ex)
+            {
+                Message.PrintLine("Exception in {0} method {1}: {2}", ConsoleColor.Magenta, typeof(T).Name, cim.Method.Name, ex.Message);
+            }
+        }
 
-		protected static bool IsInteractive { get; set; }
+        /*        public static void RunIntegrationTests()
+                {
+                    IntegrationTestRunner.RunIntegrationTests(Assembly.GetEntryAssembly());
+                }*/
+
+        protected static bool IsInteractive { get; set; }
 
         /// <summary>
         /// Execute the entry assembly as an interactive console menu.
@@ -265,7 +233,7 @@ namespace Bam.Net
         protected static FileInfo ProcessFile()
         {
             Process process = Process.GetCurrentProcess();
-            return new FileInfo(process.MainModule.FileName);            
+            return new FileInfo(process.MainModule.FileName);
         }
 
         protected static DirectoryInfo ProcessDirectory()
@@ -285,158 +253,158 @@ namespace Bam.Net
             Message.PrintLine("{0}:Passed", ConsoleColor.Green, text);
         }
 
-/*        public static void UnitTestMenu(Assembly assembly, ConsoleMenu[] otherMenus, string header)
-        {
-            Console.WriteLine(header);
-            ITestRunner<UnitTestMethod> runner = GetUnitTestRunner(assembly, Log.Default);
-            ShowActions(runner.GetTests());
-            Console.WriteLine();
-            Console.WriteLine("Q to quit\ttype all to run all tests.");
-            string answer = ShowSelectedMenuOrReturnAnswer(otherMenus);
-            Console.WriteLine();
-
-            try
-            {
-                answer = answer.Trim().ToLowerInvariant();
-                runner.RunSpecifiedTests(answer);
-            }
-            catch (Exception ex)
-            {                
-                Error("An error occurred running tests", ex);                
-            }
-
-            if (Confirm("Return to the Test menu? [y][N]"))
-            {
-                UnitTestMenu(assembly, otherMenus, header);
-            }
-            else
-            {
-                Exit(0);
-            }
-        }*/
-/*
-        public static EventHandler DefaultPassedHandler;
-        public static EventHandler DefaultFailedHandler;
-        
-        public static void RunAllSpecTests(Assembly assembly, ILogger logger = null, EventHandler passedHandler = null, EventHandler failedHandler = null)
-        {
-            passedHandler = passedHandler ?? DefaultPassedHandler;
-            failedHandler = failedHandler ?? DefaultFailedHandler;
-            ITestRunner<SpecTestMethod> runner = GetSpecTestRunner(assembly, logger);
-            AttachHandlers<SpecTestMethod>(passedHandler, failedHandler, runner);
-            AttachSpecTestRunListeners(runner);
-            runner.RunAllTests();
-        }
-
-        public static void RunSpecTestGroup(Assembly assembly, string testGroup, ILogger logger = null, EventHandler passedHandler = null, EventHandler failedHandler = null)
-        {
-            passedHandler = passedHandler ?? DefaultPassedHandler;
-            failedHandler = failedHandler ?? DefaultFailedHandler;
-            ITestRunner<SpecTestMethod> runner = GetSpecTestRunner(assembly, logger);
-            AttachHandlers<SpecTestMethod>(passedHandler, failedHandler, runner);
-            AttachSpecTestRunListeners(runner);
-            runner.RunTestGroup(testGroup);
-        }
-
-        public static void RunAllUnitTests(Assembly assembly, ILogger logger = null, EventHandler passedHandler = null, EventHandler failedHandler = null)
-        {
-            passedHandler = passedHandler ?? DefaultPassedHandler;
-            failedHandler = failedHandler ?? DefaultFailedHandler;
-            ITestRunner<UnitTestMethod> runner = GetUnitTestRunner(assembly, logger);
-            AttachHandlers<UnitTestMethod>(passedHandler, failedHandler, runner);
-            AttachUnitTestRunListeners(runner);
-            runner.RunAllTests();
-        }
-
-        public static void RunUnitTestGroup(Assembly assembly, string testGroup, ILogger logger = null, EventHandler passedHandler = null, EventHandler failedHandler = null)
-        {
-            passedHandler = passedHandler ?? DefaultPassedHandler;
-            failedHandler = failedHandler ?? DefaultFailedHandler;
-            ITestRunner<UnitTestMethod> runner = GetUnitTestRunner(assembly, logger);
-            AttachHandlers<UnitTestMethod>(passedHandler, failedHandler, runner);
-            AttachUnitTestRunListeners(runner);
-            runner.RunTestGroup(testGroup);
-        }
-*/  
-/*        protected internal static Func<IEnumerable<ITestRunListener<UnitTestMethod>>> GetUnitTestRunListeners
-        {
-            get;
-            set;
-        }
-
-        protected internal static Func<IEnumerable<ITestRunListener<SpecTestMethod>>> GetSpecTestRunListeners
-        {
-            get;
-            set;
-        }*/
-/*
-        protected internal static ITestRunner<SpecTestMethod> GetSpecTestRunner(Assembly assembly, ILogger logger)
-        {
-            return GetTestRunner<SpecTestMethod>(assembly, logger);
-        }
-
-        protected internal static ITestRunner<UnitTestMethod> GetUnitTestRunner(Assembly assembly, ILogger logger)
-        {
-            return GetTestRunner<UnitTestMethod>(assembly, logger);
-        }
-
-        protected internal static ITestRunner<TTestMethod> GetTestRunner<TTestMethod>(Assembly assembly, ILogger logger) where TTestMethod : TestMethod
-        {
-            ITestRunner<TTestMethod> runner = TestRunner<TTestMethod>.Create(assembly, logger);
-            if (Arguments != null && Arguments.Contains("tag"))
-            {
-                runner.Tag = Arguments["tag"];
-            }
-            runner.NoTestsDiscovered += (o, e) => Message.PrintLine("No tests were found in {0}", ConsoleColor.Yellow, assembly.FullName);
-            runner.TestsDiscovered += (o, e) =>
-            {
-                TestsDiscoveredEventArgs<TTestMethod> args = (TestsDiscoveredEventArgs<TTestMethod>)e;
-                Message.PrintLine("Running all tests in {0}", ConsoleColor.Green, args.Assembly.FullName);
-                Message.PrintLine("\tFound {0} tests", ConsoleColor.Cyan, args.Tests.Count);
-            };
-            runner.TestPassed += (o, e) =>
-            {
-                TestEventArgs<TTestMethod> args = (TestEventArgs<TTestMethod>)e;
-                Pass(args.Test.Information);
-            };
-            runner.TestFailed += (o, t) =>
-            {
-                TestExceptionEventArgs args = (TestExceptionEventArgs)t;
-                Message.PrintLine("Test Failed: ({0})", ConsoleColor.Red,  args.TestMethod.ToString());
-                Message.PrintLine(args.Exception.Message, ConsoleColor.Magenta);
-                Message.PrintLine();
-                Message.PrintLine(args.Exception.StackTrace, ConsoleColor.Red);
-                Message.PrintLine("---", ConsoleColor.Red);
-            };
-            runner.TestsFinished += (o, e) =>
-            {
-                TestEventArgs<TTestMethod> args = (TestEventArgs<TTestMethod>)e;
-                TestRunnerSummary summary = args.TestRunner.TestSummary;
-
-                Message.PrintLine("********", ConsoleColor.Blue);
-                if (summary.FailedTests.Count > 0)
+        /*        public static void UnitTestMenu(Assembly assembly, ConsoleMenu[] otherMenus, string header)
                 {
-                    Message.PrintLine("({0}) tests passed", ConsoleColor.Green, summary.PassedTests.Count);
-                    Message.PrintLine("({0}) tests failed", ConsoleColor.Red, summary.FailedTests.Count);
-                    StringBuilder failedTests = new StringBuilder();
-                    summary.FailedTests.ForEach(cim =>
+                    Console.WriteLine(header);
+                    ITestRunner<UnitTestMethod> runner = GetUnitTestRunner(assembly, Log.Default);
+                    ShowActions(runner.GetTests());
+                    Console.WriteLine();
+                    Console.WriteLine("Q to quit\ttype all to run all tests.");
+                    string answer = ShowSelectedMenuOrReturnAnswer(otherMenus);
+                    Console.WriteLine();
+
+                    try
                     {
-                        MethodInfo method = cim.Test.Method;
-                        Type type = method.DeclaringType;
-                        string testIdentifier = $"{type.Namespace}.{type.Name}.{method.Name}";
-                        failedTests.AppendFormat("\t{0}: ({1}) => {2}\r\n", testIdentifier, cim.Test.Information, cim.Exception?.Message ?? "[no message]");
-                    });
-                    Message.PrintLine("FAILED TESTS: \r\n {0})", new ConsoleColorCombo(ConsoleColor.Yellow, ConsoleColor.Red), failedTests.ToString());
-                }
-                else
+                        answer = answer.Trim().ToLowerInvariant();
+                        runner.RunSpecifiedTests(answer);
+                    }
+                    catch (Exception ex)
+                    {                
+                        Error("An error occurred running tests", ex);                
+                    }
+
+                    if (Confirm("Return to the Test menu? [y][N]"))
+                    {
+                        UnitTestMenu(assembly, otherMenus, header);
+                    }
+                    else
+                    {
+                        Exit(0);
+                    }
+                }*/
+        /*
+                public static EventHandler DefaultPassedHandler;
+                public static EventHandler DefaultFailedHandler;
+
+                public static void RunAllSpecTests(Assembly assembly, ILogger logger = null, EventHandler passedHandler = null, EventHandler failedHandler = null)
                 {
-                    Message.PrintLine("All ({0}) tests passed", ConsoleColor.Green, ConsoleColor.Black, summary.PassedTests.Count);
+                    passedHandler = passedHandler ?? DefaultPassedHandler;
+                    failedHandler = failedHandler ?? DefaultFailedHandler;
+                    ITestRunner<SpecTestMethod> runner = GetSpecTestRunner(assembly, logger);
+                    AttachHandlers<SpecTestMethod>(passedHandler, failedHandler, runner);
+                    AttachSpecTestRunListeners(runner);
+                    runner.RunAllTests();
                 }
-                Message.PrintLine("********", ConsoleColor.Blue, ConsoleColor.Black);
-            };
-            return runner;
-        }
-*/
+
+                public static void RunSpecTestGroup(Assembly assembly, string testGroup, ILogger logger = null, EventHandler passedHandler = null, EventHandler failedHandler = null)
+                {
+                    passedHandler = passedHandler ?? DefaultPassedHandler;
+                    failedHandler = failedHandler ?? DefaultFailedHandler;
+                    ITestRunner<SpecTestMethod> runner = GetSpecTestRunner(assembly, logger);
+                    AttachHandlers<SpecTestMethod>(passedHandler, failedHandler, runner);
+                    AttachSpecTestRunListeners(runner);
+                    runner.RunTestGroup(testGroup);
+                }
+
+                public static void RunAllUnitTests(Assembly assembly, ILogger logger = null, EventHandler passedHandler = null, EventHandler failedHandler = null)
+                {
+                    passedHandler = passedHandler ?? DefaultPassedHandler;
+                    failedHandler = failedHandler ?? DefaultFailedHandler;
+                    ITestRunner<UnitTestMethod> runner = GetUnitTestRunner(assembly, logger);
+                    AttachHandlers<UnitTestMethod>(passedHandler, failedHandler, runner);
+                    AttachUnitTestRunListeners(runner);
+                    runner.RunAllTests();
+                }
+
+                public static void RunUnitTestGroup(Assembly assembly, string testGroup, ILogger logger = null, EventHandler passedHandler = null, EventHandler failedHandler = null)
+                {
+                    passedHandler = passedHandler ?? DefaultPassedHandler;
+                    failedHandler = failedHandler ?? DefaultFailedHandler;
+                    ITestRunner<UnitTestMethod> runner = GetUnitTestRunner(assembly, logger);
+                    AttachHandlers<UnitTestMethod>(passedHandler, failedHandler, runner);
+                    AttachUnitTestRunListeners(runner);
+                    runner.RunTestGroup(testGroup);
+                }
+        */
+        /*        protected internal static Func<IEnumerable<ITestRunListener<UnitTestMethod>>> GetUnitTestRunListeners
+                {
+                    get;
+                    set;
+                }
+
+                protected internal static Func<IEnumerable<ITestRunListener<SpecTestMethod>>> GetSpecTestRunListeners
+                {
+                    get;
+                    set;
+                }*/
+        /*
+                protected internal static ITestRunner<SpecTestMethod> GetSpecTestRunner(Assembly assembly, ILogger logger)
+                {
+                    return GetTestRunner<SpecTestMethod>(assembly, logger);
+                }
+
+                protected internal static ITestRunner<UnitTestMethod> GetUnitTestRunner(Assembly assembly, ILogger logger)
+                {
+                    return GetTestRunner<UnitTestMethod>(assembly, logger);
+                }
+
+                protected internal static ITestRunner<TTestMethod> GetTestRunner<TTestMethod>(Assembly assembly, ILogger logger) where TTestMethod : TestMethod
+                {
+                    ITestRunner<TTestMethod> runner = TestRunner<TTestMethod>.Create(assembly, logger);
+                    if (Arguments != null && Arguments.Contains("tag"))
+                    {
+                        runner.Tag = Arguments["tag"];
+                    }
+                    runner.NoTestsDiscovered += (o, e) => Message.PrintLine("No tests were found in {0}", ConsoleColor.Yellow, assembly.FullName);
+                    runner.TestsDiscovered += (o, e) =>
+                    {
+                        TestsDiscoveredEventArgs<TTestMethod> args = (TestsDiscoveredEventArgs<TTestMethod>)e;
+                        Message.PrintLine("Running all tests in {0}", ConsoleColor.Green, args.Assembly.FullName);
+                        Message.PrintLine("\tFound {0} tests", ConsoleColor.Cyan, args.Tests.Count);
+                    };
+                    runner.TestPassed += (o, e) =>
+                    {
+                        TestEventArgs<TTestMethod> args = (TestEventArgs<TTestMethod>)e;
+                        Pass(args.Test.Information);
+                    };
+                    runner.TestFailed += (o, t) =>
+                    {
+                        TestExceptionEventArgs args = (TestExceptionEventArgs)t;
+                        Message.PrintLine("Test Failed: ({0})", ConsoleColor.Red,  args.TestMethod.ToString());
+                        Message.PrintLine(args.Exception.Message, ConsoleColor.Magenta);
+                        Message.PrintLine();
+                        Message.PrintLine(args.Exception.StackTrace, ConsoleColor.Red);
+                        Message.PrintLine("---", ConsoleColor.Red);
+                    };
+                    runner.TestsFinished += (o, e) =>
+                    {
+                        TestEventArgs<TTestMethod> args = (TestEventArgs<TTestMethod>)e;
+                        TestRunnerSummary summary = args.TestRunner.TestSummary;
+
+                        Message.PrintLine("********", ConsoleColor.Blue);
+                        if (summary.FailedTests.Count > 0)
+                        {
+                            Message.PrintLine("({0}) tests passed", ConsoleColor.Green, summary.PassedTests.Count);
+                            Message.PrintLine("({0}) tests failed", ConsoleColor.Red, summary.FailedTests.Count);
+                            StringBuilder failedTests = new StringBuilder();
+                            summary.FailedTests.ForEach(cim =>
+                            {
+                                MethodInfo method = cim.Test.Method;
+                                Type type = method.DeclaringType;
+                                string testIdentifier = $"{type.Namespace}.{type.Name}.{method.Name}";
+                                failedTests.AppendFormat("\t{0}: ({1}) => {2}\r\n", testIdentifier, cim.Test.Information, cim.Exception?.Message ?? "[no message]");
+                            });
+                            Message.PrintLine("FAILED TESTS: \r\n {0})", new ConsoleColorCombo(ConsoleColor.Yellow, ConsoleColor.Red), failedTests.ToString());
+                        }
+                        else
+                        {
+                            Message.PrintLine("All ({0}) tests passed", ConsoleColor.Green, ConsoleColor.Black, summary.PassedTests.Count);
+                        }
+                        Message.PrintLine("********", ConsoleColor.Blue, ConsoleColor.Black);
+                    };
+                    return runner;
+                }
+        */
         public static void Warn(string message)
         {
             Warn(message, new object[] { });
@@ -469,26 +437,26 @@ namespace Bam.Net
             Message.PrintLine("{0}\r\n\t{1}", ConsoleColor.DarkMagenta, ex.StackTrace);
         }
 
-		private static string[] ToStringArray(object[] signatureVariableValues)
-		{
-			List<string> variableValues = new List<string>(signatureVariableValues.Length);
-			foreach (object obj in signatureVariableValues)
-			{
-				variableValues.Add(obj.ToString());
-			}
-			return variableValues.ToArray();
-		}
+        private static string[] ToStringArray(object[] signatureVariableValues)
+        {
+            List<string> variableValues = new List<string>(signatureVariableValues.Length);
+            foreach (object obj in signatureVariableValues)
+            {
+                variableValues.Add(obj.ToString());
+            }
+            return variableValues.ToArray();
+        }
 
-		private static void LoggerEntryAdded(string applicationName, LogEvent logEvent)
-		{
+        private static void LoggerEntryAdded(string applicationName, LogEvent logEvent)
+        {
             MessageToConsole?.Invoke(applicationName, logEvent);
 
             if (logEvent.Severity == LogEventType.Fatal)
-			{
-				Environment.Exit(1);
-			}
-		}
-		/*
+            {
+                Environment.Exit(1);
+            }
+        }
+        /*
         private static void AttachSpecTestRunListeners(ITestRunner<SpecTestMethod> runner)
         {
             foreach (ITestRunListener<SpecTestMethod> listener in GetSpecTestRunListeners())

@@ -6,15 +6,16 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Reflection;
+using Bam.Net.CommandLine;
 
-namespace Bam.Net.CommandLine
+namespace Bam.CommandLine
 {
 
     public class ConsoleMenu
     {
         public ConsoleMenu()
         {
-        }        
+        }
         public string Name { get; set; }
         public char MenuKey { get; set; }
         public ConsoleMenuDelegate MenuWriter { get; set; }
