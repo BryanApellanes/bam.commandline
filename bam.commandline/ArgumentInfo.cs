@@ -12,7 +12,7 @@ namespace Bam.CommandLine
 {
     public class ArgumentInfo
     {
-        public ArgumentInfo(string name, bool allowNull, string description = null, string valueExample = null)
+        public ArgumentInfo(string name, bool allowNull, string? description = null, string? valueExample = null)
         {
             Name = name;
             AllowNullValue = allowNull;
@@ -20,8 +20,8 @@ namespace Bam.CommandLine
             ValueExample = valueExample;
         }
 
-        public string ValueExample { get; set; }
-        public string Description { get; set; }
+        public string? ValueExample { get; set; }
+        public string? Description { get; set; }
         public string Name { get; set; }
         public bool AllowNullValue { get; set; }
 
