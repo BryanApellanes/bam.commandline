@@ -1485,7 +1485,7 @@ File Version: {1}
                 }
             }
 
-            (toExecute.Count > 1).IsFalse("Multiple ConsoleActions found with the specified command line switch: {0}"._Format(commandLineSwitch));
+            (toExecute.Count > 1).IsFalse("Multiple ConsoleActions found with the specified command line switch: {0}".Format(commandLineSwitch));
 
             if (toExecute.Count == 0)
             {

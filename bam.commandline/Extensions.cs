@@ -150,7 +150,7 @@ namespace Bam.CommandLine
 
         public static ProcessStartInfo ToCmdStartInfo(this FileInfo cmdFileInfo, string arguments, DirectoryInfo workingDirectory)
         {
-            return OSInfo.GetPath("cmd.exe").ToStartInfo($"/c \"{cmdFileInfo.FullName}\" {arguments}");
+            return OSInfo.GetPath("cmd.exe").ToStartInfo(workingDirectory, $"/c \"{cmdFileInfo.FullName}\" {arguments}");
         }
 
 
