@@ -1,3 +1,4 @@
+using Bam.Console;
 using System;
 using System.Collections.Generic;
 

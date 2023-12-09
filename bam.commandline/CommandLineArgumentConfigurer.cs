@@ -9,6 +9,7 @@ using System.Threading.Tasks;
 using System.Reflection;
 using Bam.Net.Configuration;
 using Bam.Net;
+using Bam.Console;
 
 namespace Bam.CommandLine
 {

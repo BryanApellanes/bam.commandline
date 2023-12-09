@@ -7,9 +7,9 @@ using System.Linq;
 using System.Text;
 using System.Reflection;
 using Bam.Net;
-using Bam.Net.CommandLine;
 using Bam.Net.Data.Model;
 using Bam.CommandLine;
+using Bam.Console;
 
 namespace Bam.Net.Data.Model
 {

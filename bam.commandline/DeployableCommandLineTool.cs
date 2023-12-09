@@ -2,8 +2,8 @@ using System;
 using System.Diagnostics;
 using System.IO;
 using System.IO.Compression;
+using Bam.Console;
 using Bam.Net;
-using Bam.Net.CommandLine;
 //using Bam.Net.Testing;
 using Bam.Net.Web;
 

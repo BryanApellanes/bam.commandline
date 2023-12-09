@@ -8,11 +8,11 @@ using System.Text;
 using System.Reflection;
 using System.IO;
 using Bam.Net.Logging;
-using Bam.Net.CommandLine;
 using Bam.Net.Configuration;
 using Bam.Net;
 using Bam.Net.ExceptionHandling;
 using System.Diagnostics;
+using Bam.Console;
 
 namespace Bam.CommandLine
 {

@@ -16,6 +16,7 @@ using System.Threading.Tasks;
 using Bam.Net.Application;
 using Bam.Net.CommandLine;
 using Bam.CommandLine;
+using Bam.Console;
 //using Bam.Net.Automation;
 
 namespace Bam.CommandLine
@@ -61,7 +62,7 @@ namespace Bam.CommandLine
             ConsoleKeyInfo keyInfo;
             do
             {
-                keyInfo = Console.ReadKey(true);
+                keyInfo = System.Console.ReadKey(true);
                 if (keyInfo.Key != ConsoleKey.Backspace && keyInfo.Key != ConsoleKey.Enter)
                 {
                     pass += keyInfo.KeyChar;
@@ -233,13 +234,13 @@ namespace Bam.CommandLine
                     KillExistingProcess(pidFilePath, commandLineArgs);
                 }
                 info.SafeWriteToFile(pidFilePath, true);
-                Console.WriteLine("Wrote pid file {0}", pidFilePath);
+                System.Console.WriteLine("Wrote pid file {0}", pidFilePath);
             }
             catch (Exception ex)
             {
-                Console.WriteLine("Couldn't write pid file ({0}): {1}", pidFilePath, ex.Message);
+                System.Console.WriteLine("Couldn't write pid file ({0}): {1}", pidFilePath, ex.Message);
                 pidFilePath = Path.Combine(Path.GetTempPath(), pidFileName);
-                Console.WriteLine("Trying {0}", pidFilePath);
+                System.Console.WriteLine("Trying {0}", pidFilePath);
                 try
                 {
                     KillExistingProcess(pidFilePath, commandLineArgs);
@@ -247,8 +248,8 @@ namespace Bam.CommandLine
                 }
                 catch (Exception ex2)
                 {
-                    Console.WriteLine("Couldn't write pid file ({0}): {1}", pidFilePath, ex2.Message);
-                    Console.WriteLine("Giving up");
+                    System.Console.WriteLine("Couldn't write pid file ({0}): {1}", pidFilePath, ex2.Message);
+                    System.Console.WriteLine("Giving up");
                 }
             }
         }
@@ -274,16 +275,16 @@ namespace Bam.CommandLine
                     try
                     {
                         Process.GetProcessById(int.Parse(pid)).Kill();
-                        Console.WriteLine("Killed old process ({0})", pid);
+                        System.Console.WriteLine("Killed old process ({0})", pid);
                     }
                     catch (Exception ex)
                     {
-                        Console.WriteLine("Exception trying to kill process ({0}): {1}", pid, ex.Message);
+                        System.Console.WriteLine("Exception trying to kill process ({0}): {1}", pid, ex.Message);
                     }
                 }
                 else
                 {
-                    Console.WriteLine("Did NOT kill pid ({0}), command line args didn't match", pid);
+                    System.Console.WriteLine("Did NOT kill pid ({0}), command line args didn't match", pid);
                 }
             }
         }
@@ -415,7 +416,7 @@ namespace Bam.CommandLine
                 OutLine();
             }
 
-            string answer = Console.ReadLine().Trim().ToLower();
+            string answer = System.Console.ReadLine().Trim().ToLower();
             if (answer.IsAffirmative())
             {
                 return true;
@@ -620,7 +621,7 @@ namespace Bam.CommandLine
                     {
                         OutLine($"{message} {promptTxt}", colors);
                         Thread.Sleep(200);
-                        string answer = Console.ReadLine();
+                        string answer = System.Console.ReadLine();
 
                         if (allowQuit && answer.ToLowerInvariant().Equals("q"))
                         {
@@ -641,7 +642,7 @@ namespace Bam.CommandLine
 
         public static void Clear()
         {
-            Console.Clear();
+            System.Console.Clear();
         }
 
         public static void Exit()
@@ -651,7 +652,7 @@ namespace Bam.CommandLine
 
         public static void Exit(int code)
         {
-            Console.ResetColor();
+            System.Console.ResetColor();
             OnExiting(code);
             Thread.Sleep(1000);
             Environment.Exit(code);
@@ -762,16 +763,16 @@ File Version: {1}
 
         private static void ShowMenu(ConsoleMenu[] otherMenus, string headerText, List<ConsoleMethod> actions)
         {
-            Console.WriteLine(headerText);
-            Console.WriteLine();
+            System.Console.WriteLine(headerText);
+            System.Console.WriteLine();
 
             ShowActions(actions);
 
-            Console.Write("| Q -> quit ");
+            System.Console.Write("| Q -> quit ");
 
             string answer = ShowSelectedMenuOrReturnAnswer(otherMenus);
 
-            Console.WriteLine();
+            System.Console.WriteLine();
 
             try
             {
@@ -801,11 +802,11 @@ File Version: {1}
             }
         }
 
-        protected static string ShowSelectedMenuOrReturnAnswer(ConsoleMenu[] otherMenus)
+        protected static string ShowSelectedMenuOrReturnAnswer(CommandLine.ConsoleMenu[] otherMenus)
         {
             WriteOtherMenuOptions(otherMenus);
-            string answer = Console.ReadLine();
-            Console.WriteLine();
+            string answer = System.Console.ReadLine();
+            System.Console.WriteLine();
             if (answer.Trim().ToLower().Equals("q"))
             {
                 Environment.Exit(0);
@@ -821,9 +822,9 @@ File Version: {1}
             {
                 foreach (ConsoleMenu menu in otherMenus)
                 {
-                    Console.Write(" | " + menu.MenuKey + " -> " + menu.Name);
+                    System.Console.Write(" | " + menu.MenuKey + " -> " + menu.Name);
                 }
-                Console.WriteLine();
+                System.Console.WriteLine();
             }
         }
 
@@ -838,7 +839,7 @@ File Version: {1}
                         menu.MenuWriter(menu.AssemblyToAnalyze, otherMenus, menu.HeaderText);
                     }
                 }
-                Console.WriteLine();
+                System.Console.WriteLine();
             }
         }
 
@@ -857,7 +858,7 @@ File Version: {1}
             {
                 if (_outProvider == null)
                 {
-                    _outProvider = Console.WriteLine;
+                    _outProvider = System.Console.WriteLine;
                 }
 
                 return _outProvider;
@@ -962,10 +963,10 @@ File Version: {1}
                 {
                     lock (_colorLock)
                     {
-                        Console.ForegroundColor = msg.Colors.ForegroundColor;
-                        Console.BackgroundColor = msg.Colors.BackgroundColor;
-                        Console.Write(msg.Text);
-                        Console.ResetColor();
+                        System.Console.ForegroundColor = msg.Colors.ForegroundColor;
+                        System.Console.BackgroundColor = msg.Colors.BackgroundColor;
+                        System.Console.Write(msg.Text);
+                        System.Console.ResetColor();
                     }
                 });
             });
@@ -1077,7 +1078,7 @@ File Version: {1}
             }
             else
             {
-                Console.WriteLine("Invalid entry");
+                System.Console.WriteLine("Invalid entry");
                 Environment.Exit(1);
             }
         }
@@ -1161,7 +1162,7 @@ File Version: {1}
             {
                 ConsoleMethod consoleMethod = actions[i - 1];
                 string menuOption = consoleMethod.Information;
-                Console.WriteLine("{0}. {1}", i, menuOption);
+                System.Console.WriteLine("{0}. {1}", i, menuOption);
             }
         }
 
@@ -1180,11 +1181,11 @@ File Version: {1}
         protected static char Pause(string message, Action ifOutputRedirected = null)
         {
             if (!string.IsNullOrEmpty(message))
-                Console.WriteLine(message);
+                System.Console.WriteLine(message);
 
-            if (!Console.IsOutputRedirected)
+            if (!System.Console.IsOutputRedirected)
             {
-                ConsoleKeyInfo keyInfo = Console.ReadKey();
+                ConsoleKeyInfo keyInfo = System.Console.ReadKey();
                 if (keyInfo.Key == ConsoleKey.Q)
                 {
                     Exit(0);
@@ -1433,8 +1434,8 @@ File Version: {1}
         {
             if (Arguments.Contains("debug"))// || BamSettings.BamDebug)
             {
-                Console.WriteLine($"Attach Debugger: ProcessId={Process.GetCurrentProcess().Id}");
-                Console.ReadLine();
+                System.Console.WriteLine($"Attach Debugger: ProcessId={Process.GetCurrentProcess().Id}");
+                System.Console.ReadLine();
             }
         }
 
