@@ -45,8 +45,17 @@ namespace Bam.CommandLine
         public static ProcessOutput SpawnSelf(string arguments)
         {
             Process process = Process.GetCurrentProcess();
-            FileInfo main = new FileInfo(process.MainModule.FileName);
-            return $"{main.FullName} {arguments}".Run();
+            return Respawn(arguments, process);
+        }
+
+        private static ProcessOutput Respawn(string arguments, Process process)
+        {
+            if(process?.MainModule != null)
+            {
+                FileInfo main = new FileInfo(process.MainModule.FileName);
+                return $"{main.FullName} {arguments}".Run();
+            }
+            return new ProcessOutput();
         }
 
         public static string PasswordPrompt(string promptMessage = null, ConsoleColor color = ConsoleColor.Cyan)
