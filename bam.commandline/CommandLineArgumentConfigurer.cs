@@ -7,8 +7,8 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Reflection;
-using Bam.Net.Configuration;
-using Bam.Net;
+using Bam.Configuration;
+using Bam;
 using Bam.Console;
 
 namespace Bam.CommandLine

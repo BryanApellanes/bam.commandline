@@ -6,9 +6,9 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Reflection;
-using Bam.Net;
+using Bam;
 using System.Diagnostics;
-using Bam.Net.Logging;
+using Bam.Logging;
 
 namespace Bam.CommandLine
 {

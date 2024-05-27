@@ -7,17 +7,17 @@ using System.Linq;
 using System.Text;
 using System.Reflection;
 using System.IO;
-using Bam.Net;
+using Bam;
 using System.Diagnostics;
-using Bam.Net.Logging;
-using Bam.Net.Configuration;
+using Bam.Logging;
+using Bam.Configuration;
 using System.Threading;
 using System.Threading.Tasks;
-using Bam.Net.Application;
-using Bam.Net.CommandLine;
+using Bam.Application;
+using Bam.CommandLine;
 using Bam.CommandLine;
 using Bam.Console;
-//using Bam.Net.Automation;
+//using Bam.Automation;
 
 namespace Bam.CommandLine
 {
