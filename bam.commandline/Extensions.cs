@@ -31,6 +31,11 @@ namespace Bam.CommandLine
                     CommandLineInterface.InvokeInSeparateAppDomain(consoleInvokeableMethod.Method, consoleInvokeableMethod.Provider, consoleInvokeableMethod.Parameters);
                 }*/
 
+        public static ProcessOutput Run(this string command)
+        {
+            return Run(command, (s)=> { }, 600000);
+        }
+        
         /// <summary>
         /// Run the specified command in a separate process capturing the output
         /// and error streams if any. This method will block if a timeout is specified,
