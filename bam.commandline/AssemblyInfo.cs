@@ -1,3 +1,3 @@
 ﻿using System.Runtime.CompilerServices;
 
-[assembly: InternalsVisibleTo("bam.testing")]
+[assembly: InternalsVisibleTo("bam.test")]

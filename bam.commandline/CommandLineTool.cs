@@ -137,7 +137,7 @@ namespace Bam.CommandLine
                 }
             }
         }
-        /* Moved these to bam.testing.TestableCommandLineTool
+        /* Moved these to bam.test.TestableCommandLineTool
                 private static void RunSpecTests()
                 {
                     if (Arguments.Contains("group"))
