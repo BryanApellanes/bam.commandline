@@ -14,8 +14,6 @@ using Bam.Configuration;
 using System.Threading;
 using System.Threading.Tasks;
 using Bam.Application;
-using Bam.CommandLine;
-using Bam.CommandLine;
 using Bam.Console;
 //using Bam.Automation;
 
